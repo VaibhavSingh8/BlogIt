@@ -2,11 +2,11 @@ import config from "../config/config.js";
 import { Client, Account, ID } from "appwrite";
 
 
-export class AuthService{
+export class AuthService {
     client = new Client();
     account;
 
-    constructor(){
+    constructor() {
         this.client
             .setEndpoint(config.appwriteURL)
             .setProject(config.appwriteProjectID);
@@ -14,25 +14,25 @@ export class AuthService{
         this.account = new Account(this.client);
     }
 
-    async createUserAccount(email, password, name){
-        try{
+    async createUserAccount(email, password, name) {
+        try {
             const user = await this.account.create(ID.unique(), email, password, name);
             if (user) {
 
                 //call login if user exists
 
                 return this.userLogin(email, password);
-                
+
             } else {
                 return "Account not created!"
             }
         }
-        catch(error){
+        catch (error) {
             throw error;
         }
     }
 
-    async userLogin(email, password){
+    async userLogin(email, password) {
         try {
             return await this.account.createEmailSession(email, password);
         } catch (error) {
@@ -40,7 +40,7 @@ export class AuthService{
         }
     }
 
-    async isUserLoggedIn(){
+    async getCurrentUser() {
         try {
             return await this.account.get();
         } catch (error) {
@@ -50,7 +50,7 @@ export class AuthService{
         return null;
     }
 
-    async userLogout(){
+    async userLogout() {
         try {
             return await this.account.deleteSessions();
         } catch (error) {
